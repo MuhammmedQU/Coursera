@@ -326,14 +326,12 @@ def admin_logout():
 
 
 # ===== APPLICATION INITIALIZATION =====
+# Initialize database (runs on app startup - works with both Flask dev server and Gunicorn)
+init_db()
+migrate_from_json()
+create_admin_user()
+
+
 if __name__ == '__main__':
-    # Initialize database
-    init_db()
-    
-    # Migrate data from JSON if it exists
-    migrate_from_json()
-    
-    # Create default admin user
-    create_admin_user()
-    
+    # Local development only
     app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
