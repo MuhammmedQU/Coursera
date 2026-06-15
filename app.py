@@ -24,81 +24,95 @@ def get_db():
 
 def init_db():
     """Initialize database and create tables if they don't exist"""
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    # Create users table
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            status TEXT NOT NULL DEFAULT 'pending',
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            approved_at TIMESTAMP
-        )
-    ''')
-    
-    # Create admin table for admin credentials
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS admin_users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        
+        # Create users table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'pending',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                approved_at TIMESTAMP
+            )
+        ''')
+        
+        # Create admin table for admin credentials
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS admin_users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
+        conn.commit()
+        conn.close()
+        print("[DB] Database tables initialized successfully")
+    except Exception as e:
+        print(f"[DB ERROR] Failed to initialize database: {e}")
 
 
 def migrate_from_json():
     """Migrate existing users from users.json to database (run only once)"""
     if not os.path.exists('users.json'):
+        print("[DB] No users.json file found, skipping migration")
         return
     
-    conn = get_db()
-    cursor = conn.cursor()
-    
     try:
+        conn = get_db()
+        cursor = conn.cursor()
+        
         with open('users.json', 'r') as f:
             users = json.load(f)
         
+        migrated_count = 0
         for user in users:
             try:
                 cursor.execute('''
                     INSERT INTO users (email, password, status)
                     VALUES (?, ?, ?)
                 ''', (user['email'], user['password'], user.get('status', 'pending')))
+                migrated_count += 1
             except sqlite3.IntegrityError:
                 # User already exists, skip
                 pass
         
         conn.commit()
-    except Exception as e:
-        print(f"Error migrating from JSON: {e}")
-    finally:
         conn.close()
+        print(f"[DB] Successfully migrated {migrated_count} users from users.json")
+    except Exception as e:
+        print(f"[DB ERROR] Error migrating from JSON: {e}")
 
 
 def create_admin_user():
     """Create default admin user if it doesn't exist"""
-    conn = get_db()
-    cursor = conn.cursor()
-    
     try:
+        conn = get_db()
+        cursor = conn.cursor()
+        
         hashed_password = generate_password_hash(ADMIN_PASSWORD)
         cursor.execute('''
             INSERT INTO admin_users (email, password)
             VALUES (?, ?)
         ''', (ADMIN_EMAIL, hashed_password))
         conn.commit()
+        conn.close()
+        print(f"[DB] Admin user created: {ADMIN_EMAIL}")
     except sqlite3.IntegrityError:
         # Admin already exists
-        pass
-    finally:
+        print(f"[DB] Admin user already exists: {ADMIN_EMAIL}")
         conn.close()
+    except Exception as e:
+        print(f"[DB ERROR] Error creating admin user: {e}")
+        try:
+            conn.close()
+        except:
+            pass
 
 
 def get_user_by_email(email):
@@ -327,9 +341,24 @@ def admin_logout():
 
 # ===== APPLICATION INITIALIZATION =====
 # Initialize database (runs on app startup - works with both Flask dev server and Gunicorn)
+print("[STARTUP] Initializing database...")
 init_db()
-migrate_from_json()
+print("[STARTUP] Creating admin user...")
 create_admin_user()
+print("[STARTUP] Migrating users from JSON...")
+migrate_from_json()
+print("[STARTUP] Application initialized successfully!\n")
+
+
+# Backup initialization handler (in case module-level initialization doesn't run)
+@app.before_request
+def ensure_db_initialized():
+    """Ensure database is initialized before handling any request"""
+    if not os.path.exists(DATABASE):
+        print("[STARTUP] Database not found, running initialization...")
+        init_db()
+        create_admin_user()
+        migrate_from_json()
 
 
 if __name__ == '__main__':
