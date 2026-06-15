@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Dərslər - AbituriyentAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1 class="logo">AbituriyentAI</h1>
+            <div class="nav-links">
+                <span class="user-email">👤 {{ email }}</span>
+                <a href="/logout" class="btn-logout">Çıxış</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="video-container">
+        <div class="video-sections">
+            <div class="accordion-item">
+                <button class="accordion-header" data-accordion="1">
+                    <span class="accordion-title"><i class="fas fa-video"></i> AI ilə hazırlığa necə başlamaq olar?</span>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </button>
+                <div class="accordion-content" id="content-1">
+                    <div class="video-card">
+                        <div class="video-watermark" aria-hidden="true">
+                            <span class="watermark-text">{{ email }}</span>
+                            <span class="watermark-text watermark-text-2">{{ email }}</span>
+                            <span class="watermark-text watermark-text-3">{{ email }}</span>
+                        </div>
+                        <iframe 
+                            loading="lazy"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header" data-accordion="2">
+                    <span class="accordion-title"><i class="fas fa-lightbulb"></i> Real Praktiki Nümunə</span>
+                    <i class="fas fa-chevron-down accordion-icon"></i>
+                </button>
+                <div class="accordion-content" id="content-2">
+                    <div class="video-card">
+                        <div class="video-watermark" aria-hidden="true">
+                            <span class="watermark-text">{{ email }}</span>
+                            <span class="watermark-text watermark-text-2">{{ email }}</span>
+                            <span class="watermark-text watermark-text-3">{{ email }}</span>
+                        </div>
+                        <iframe 
+                            loading="lazy"
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 AbituriyentAI. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Accordion data with video IDs
+        const accordionData = {
+            1: {
+                videoId: '85NVKp7YoJY',
+                title: 'AI ilə hazırlığa necə başlamaq olar?'
+            },
+            2: {
+                videoId: 'QYeK25CvJNY',
+                title: 'Real Praktiki Nümunə'
+            }
+        };
+
+        // Initialize accordions
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const accordionId = this.getAttribute('data-accordion');
+                const content = document.getElementById(`content-${accordionId}`);
+                const icon = this.querySelector('.accordion-icon');
+                const isOpen = content.classList.contains('active');
+
+                // Close all other accordions
+                document.querySelectorAll('.accordion-content').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelectorAll('.accordion-icon').forEach(i => {
+                    i.classList.remove('rotated');
+                });
+
+                // Toggle current accordion
+                if (!isOpen) {
+                    content.classList.add('active');
+                    icon.classList.add('rotated');
+                    
+                    // Load video src if not already loaded
+                    const iframe = content.querySelector('iframe');
+                    if (!iframe.getAttribute('src')) {
+                        const videoId = accordionData[accordionId].videoId;
+                        iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0`);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

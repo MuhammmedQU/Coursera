@@ -1,0 +1,22 @@
+[
+  {
+    "email": "student1@gmail.com",
+    "password": "pbkdf2:sha256:1000000$A77jaBW1mmyZVyVb$e39ac2f883f39d265054b3ecc98c66cc30a7d4a84c02c9327aa812047e5f61f7",
+    "status": "approved"
+  },
+  {
+    "email": "student2@gmail.com",
+    "password": "pbkdf2:sha256:1000000$JYEN70OqskvMhW6K$8f1917f19164ee34ecafd0d52dde3a2e46ee65003d61f12448c3d14ff4eeb229",
+    "status": "approved"
+  },
+  {
+    "email": "mehemmed@gmail.com",
+    "password": "scrypt:32768:8:1$IfMpliODwvViTw5j$501b6d5b3840e092cc21dc19cade42bc6fff27b86e72ad2f856cc5f7484a801677d8f4bf97c4cd6d96c09ae3fe77a1162b1a1d64b0d427d686bd863bf756bb56",
+    "status": "approved"
+  },
+  {
+    "email": "muhammed.ehmedov94@gmail.com",
+    "password": "scrypt:32768:8:1$jXQDXflJk7pEjEcv$a92cea2817738f45eebb905b6ab6d4bdccbdd475c06a1cb35c8822ad7795da68820a51837676734aed2faea19e6f2da379bf8d13b214bc566535dc524a98b255",
+    "status": "pending"
+  }
+]
