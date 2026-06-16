@@ -276,7 +276,7 @@ def logout():
 
 
 # ===== ADMIN ROUTES =====
-@app.route('/admin/login', methods=['GET', 'POST'])
+@app.route('/admin', methods=['GET', 'POST'])
 def admin_login():
     """Admin login page"""
     if request.method == 'POST':
