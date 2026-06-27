@@ -8,95 +8,151 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Consent Modal -->
-    <div id="consentOverlay" class="consent-overlay">
-        <div class="consent-modal">
-            <div class="consent-modal-content">
-                <div class="consent-modal-header">
-                    <h2>İstifadə Şərtləri</h2>
-                </div>
-                <div class="consent-modal-body">
-                    <p>Bu platforma üzərində yerləşən video məzmun yalnız qeydiyyatdan keçmiş və təsdiq olunmuş istifadəçilər tərəfindən şəxsi təhsil məqsədləri üçün istifadə olunmaq üçün nəzərdə tutulmuşdur. Video kontentin hər hansı formada (keçid, paylaşma, yükləmə, yazıya almaq və ya digər üçüncü tərəflərə göndərmə) paylaşılması, yayılması və ya istifadə edilməsi qat-i olaraq yasağdır.</p>
-                    <p>Bu şərtlərin pozulması halində istifadəçi hesabının ani olaraq bloklana biləcəyini, habelə yaşadığı zərərlərə görə hüquqi məsuliyyət daşıya biləcəyini qəbul edirəm. Məzmunun qeyri-icazəli surətdə paylaşılması nəticəsində yaranacaq bütün zərərlərə görə məsuliyyət tamamilə istifadəçiyə aiddir.</p>
-                    <p>Bu şərtləri qəbul etməklə, siz yuxarıda göstərilən bütün qaydaları başa düşdüyünüzü və onlara riayət edəcəyinizi təsdiq edirsiniz. Hər hansı bir pozuntu halində platform idarəçiliyi qanunvericiliyin rəhbərliyində tədbirlərin alınması hüququna malikdir.</p>
-                </div>
-                <div class="consent-checkbox-wrapper">
-                    <input type="checkbox" id="consentCheckbox">
-                    <label for="consentCheckbox">Şərtləri oxudum və qəbul edirəm</label>
-                </div>
-                <div class="consent-button-group">
-                    <button id="consentConfirmBtn" class="consent-btn-confirm" disabled>Təsdiq et</button>
-                </div>
+
+<!-- Consent Modal -->
+<div id="consentOverlay" class="consent-overlay">
+    <div class="consent-modal">
+        <div class="consent-modal-content">
+            <div class="consent-modal-header">
+                <h2>İstifadə Şərtləri</h2>
+            </div>
+            <div class="consent-modal-body">
+                <p>Bu platforma üzərində yerləşən video məzmun yalnız qeydiyyatdan keçmiş və təsdiq olunmuş istifadəçilər tərəfindən şəxsi təhsil məqsədləri üçün nəzərdə tutulmuşdur. Video kontentin hər hansı formada (keçid, paylaşma, yükləmə, yazıya almaq və ya digər üçüncü tərəflərə göndərmə) paylaşılması qəti olaraq yasağdır.</p>
+                <p>Bu şərtlərin pozulması halında istifadəçi hesabının ani olaraq bloklana biləcəyini, habelə yaşadığı zərərlərə görə hüquqi məsuliyyət daşıya biləcəyini qəbul edirəm. Məzmunun qeyri-icazəli surətdə paylaşılması nəticəsində yaranacaq bütün zərərlərə görə məsuliyyət tamamilə istifadəçiyə aiddir.</p>
+                <p>Bu şərtləri qəbul etməklə, siz yuxarıda göstərilən bütün qaydaları başa düşdüyünüzü və onlara riayət edəcəyinizi təsdiq edirsiniz.</p>
+            </div>
+            <div class="consent-checkbox-wrapper">
+                <input type="checkbox" id="consentCheckbox">
+                <label for="consentCheckbox">Şərtləri oxudum və qəbul edirəm</label>
+            </div>
+            <div class="consent-button-group">
+                <button id="consentConfirmBtn" class="consent-btn-confirm" disabled>Təsdiq et</button>
             </div>
         </div>
     </div>
+</div>
 
-    <nav class="navbar">
-        <div class="container">
-            <h1 class="logo">AbituriyentAI</h1>
-            <div class="nav-links">
-                <a href="#about">About</a>
-                <a href="#contact">Contact</a>
-                <a href="/login" class="btn-login">Login</a>
-            </div>
+<nav class="navbar">
+    <div class="container">
+        <h1 class="logo">AbituriyentAI</h1>
+        <div class="nav-links">
+            <a href="#about">Kurs haqqında</a>
+            <a href="#contact">Əlaqə</a>
+            <a href="/login" class="btn-login">Daxil ol</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>AbituriyentAI – Süni İntellektlə Daha Ağıllı Hazırlaş</h1>
-            <p>Bu təlimdə ChatGPT və digər AI alətlərindən istifadə edərək qəbul imtahanlarına daha sürətli, daha effektiv və daha az xərc ilə necə hazırlaşa biləcəyinizi öyrənəcəksiniz.</p>
-            <a href="/signup" class="btn-primary">Elə indi qeydiyyatdan keç</a>
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span></span> Azərbaycanda ilk AI-əsaslı hazırlıq platformu
         </div>
-    </section>
+        <h1>
+            <span class="highlight">Süni İntellektlə</span><br>
+            Daha Ağıllı Hazırlaş
+        </h1>
+        <p>ChatGPT və digər AI alətlərindən istifadə edərək qəbul imtahanlarına daha sürətli, daha effektiv və daha az xərc ilə hazırlaşmağı öyrən.</p>
+        <a href="/signup" class="btn-primary">
+            <i class="fas fa-rocket"></i>
+            Elə indi qeydiyyatdan keç
+        </a>
+    </div>
+    <div class="hero-stats">
+        <div class="hero-stat">
+            <strong>2x</strong>
+            <span>Daha sürətli öyrənmə</span>
+        </div>
+        <div class="hero-stat">
+            <strong>100%</strong>
+            <span>Onlayn, istənilən vaxt</span>
+        </div>
+        <div class="hero-stat">
+            <strong>0₼</strong>
+            <span>Əlavə repetitor xərci</span>
+        </div>
+    </div>
+</section>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <div class="container">
-            <h2><i class="fas fa-lightbulb"></i> Kurs Haqqında</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>AbituriyentAI abituriyentlər üçün hazırlanmış xüsusi təlim proqramıdır. Bu təlimdə süni intellektdən düzgün istifadə etməyi, ChatGPT-yə düzgün suallar verməyi, fərdi dərs planı qurmağı, mövzuları daha tez öyrənməyi və test həll etmə prosesini sürətləndirməyi öyrənəcəksiniz. Məqsəd şagirdlərə AI-nin imkanlarından istifadə edərək evdə daha səmərəli hazırlaşmağa kömək etməkdir.</p>
-                    <ul class="features">
-                        <li><i class="fas fa-check-circle"></i> ChatGPT-dən düzgün istifadə qaydaları</li>
-                        <li><i class="fas fa-check-circle"></i> AI ilə fərdi dərs planının hazırlanması</li>
-                        <li><i class="fas fa-check-circle"></i> Mövzuların AI vasitəsilə öyrənilməsi</li>
-                        <li><i class="fas fa-check-circle"></i> Test və sual həll etmə metodları</li>
-                        <li><i class="fas fa-check-circle"></i> Vaxta qənaət edən öyrənmə strategiyaları</li>
-                        <li><i class="fas fa-check-circle"></i> Hazırlıq xərclərini azaltmaq yolları</li>
-                    </ul>
+<!-- About -->
+<section id="about" class="about">
+    <div class="container">
+        <div class="section-label">Kurs haqqında</div>
+        <h2>AI ilə hazırlıq niyə fərqlidir?</h2>
+        <p class="about-subtitle">AbituriyentAI abituriyentlər üçün hazırlanmış xüsusi təlim proqramıdır. Süni intellektdən düzgün istifadə etməyi, fərdi dərs planı qurmağı və mövzuları daha tez öyrənməyi birgə kəşf edirik.</p>
+        <ul class="features">
+            <li>
+                <div class="feature-icon"><i class="fas fa-comments"></i></div>
+                <div class="feature-text">
+                    <strong>ChatGPT-dən düzgün istifadə</strong>
+                    <span>Düzgün suallar verərək dəqiq cavablar al</span>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2><i class="fas fa-envelope"></i> Əlaqə</h2>
-            <div class="contact-content">
-                <p>Kurs haqqında suallarınız var? Biz buradayıq!</p>
-                <div class="contact-info">
-                    <div class="info-item">
-                        <div class="info-icon"><i class="fas fa-phone"></i></div>
-                        <h3>Telefon</h3>
-                        <p><a href="tel:+994702045610">+994 70 204 56 10</a></p>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-icon"><i class="fas fa-envelope"></i></div>
-                        <h3>Email</h3>
-                        <p><a href="mailto:muhammed.ehmedov94@gmail.com">muhammed.ehmedov94@gmail.com</a></p>
-                    </div>
+            </li>
+            <li>
+                <div class="feature-icon"><i class="fas fa-calendar-check"></i></div>
+                <div class="feature-text">
+                    <strong>Fərdi dərs planı</strong>
+                    <span>AI ilə sənə uyğun cədvəl hazırla</span>
                 </div>
+            </li>
+            <li>
+                <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                <div class="feature-text">
+                    <strong>Mövzuları AI ilə öyrən</strong>
+                    <span>Çətin mövzuları sadə dildə izah etdir</span>
+                </div>
+            </li>
+            <li>
+                <div class="feature-icon"><i class="fas fa-tasks"></i></div>
+                <div class="feature-text">
+                    <strong>Test həll etmə metodları</strong>
+                    <span>AI ilə tapşırıqları daha sürətli həll et</span>
+                </div>
+            </li>
+            <li>
+                <div class="feature-icon"><i class="fas fa-clock"></i></div>
+                <div class="feature-text">
+                    <strong>Vaxta qənaət strategiyaları</strong>
+                    <span>Az vaxtda maksimum nəticə əldə et</span>
+                </div>
+            </li>
+            <li>
+                <div class="feature-icon"><i class="fas fa-piggy-bank"></i></div>
+                <div class="feature-text">
+                    <strong>Xərcləri azalt</strong>
+                    <span>Repetitor xərci olmadan hazırlaş</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<!-- Contact -->
+<section id="contact" class="contact">
+    <div class="container">
+        <div class="section-label">Əlaqə</div>
+        <h2>Sualınız var?</h2>
+        <p style="font-size:17px; color:var(--text-secondary); margin-bottom:0;">Kurs haqqında hər hansı sualınız üçün bizimlə əlaqə saxlayın.</p>
+        <div class="contact-grid">
+            <div class="info-card">
+                <div class="info-icon-wrap"><i class="fas fa-phone"></i></div>
+                <h3>Telefon</h3>
+                <p><a href="tel:+994702045610">+994 70 204 56 10</a></p>
+            </div>
+            <div class="info-card">
+                <div class="info-icon-wrap"><i class="fas fa-envelope"></i></div>
+                <h3>Email</h3>
+                <p><a href="mailto:muhammed.ehmedov94@gmail.com">muhammed.ehmedov94@gmail.com</a></p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <footer>
-        <p>&copy; 2026 AbituriyentAI. All rights reserved.</p>
-    </footer>
+<footer>
+    <p>&copy; 2026 AbituriyentAI. Bütün hüquqlar qorunur.</p>
+</footer>
 
-    <script src="{{ url_for('static', filename='consent-modal.js') }}"></script>
+<script src="{{ url_for('static', filename='consent-modal.js') }}"></script>
 </body>
 </html>

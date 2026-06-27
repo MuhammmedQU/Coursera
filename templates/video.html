@@ -8,75 +8,87 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <h1 class="logo">AbituriyentAI</h1>
-            <div class="nav-links">
-                <span class="user-email">👤 {{ email }}</span>
-                <a href="#" class="btn-logout" onclick="confirmLogout(event)">Çıxış</a>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Logout confirmation modal -->
-    <div id="logoutModal" class="logout-modal" style="display:none;">
-        <div class="logout-modal-box">
-            <p>Çıxmaq istədiyinizə əminsiniz?</p>
-            <div class="logout-modal-buttons">
-                <a href="/logout" class="btn-primary">Bəli, çıxım</a>
-                <button onclick="closeLogout()" class="btn-cancel">Xeyr</button>
-            </div>
+<nav class="navbar">
+    <div class="container">
+        <h1 class="logo">AbituriyentAI</h1>
+        <div class="nav-links">
+            <span class="user-email">👤 {{ email }}</span>
+            <a href="#" class="btn-logout" onclick="confirmLogout(event)">Çıxış</a>
         </div>
     </div>
-    <div id="logoutBackdrop" class="logout-backdrop" style="display:none;" onclick="closeLogout()"></div>
+</nav>
 
-    <!-- Welcome message -->
-    {% if is_new_login %}
-    <div class="welcome-banner" id="welcomeBanner">
-        <span>🎉 Xoş gəldin, <strong>{{ email }}</strong>! Uğurlu öyrənmələr!</span>
-        <button onclick="document.getElementById('welcomeBanner').style.display='none'" class="welcome-close">✕</button>
-    </div>
-    {% endif %}
-
-    <!-- Progress bar -->
-    <div class="progress-section">
-        <div class="container">
-            <div class="progress-info">
-                <span>Tamamlanma: <strong id="progressText">{{ progress|length }}/2</strong></span>
-                <div class="progress-bar-outer">
-                    <div class="progress-bar-inner" style="width: {{ (progress|length / 2 * 100)|int }}%"></div>
-                </div>
-            </div>
+<!-- Logout modal -->
+<div id="logoutModal" class="logout-modal" style="display:none;">
+    <div class="logout-modal-box">
+        <p>Çıxmaq istəyirsən?</p>
+        <span>Kursa geri qayıda bilərsən istənilən vaxt.</span>
+        <div class="logout-modal-buttons">
+            <a href="/logout" class="btn-primary" style="padding:11px 28px; font-size:15px;">Bəli, çıxım</a>
+            <button onclick="closeLogout()" class="btn-cancel">Xeyr</button>
         </div>
     </div>
+</div>
+<div id="logoutBackdrop" class="logout-backdrop" style="display:none;" onclick="closeLogout()"></div>
 
-    <div class="video-container">
-        <div class="video-sections">
+<!-- Welcome banner -->
+{% if is_new_login %}
+<div class="welcome-banner" id="welcomeBanner">
+    <span>🎉 Xoş gəldin, <strong>{{ email }}</strong>! Uğurlu öyrənmələr!</span>
+    <button onclick="document.getElementById('welcomeBanner').style.display='none'" class="welcome-close">✕</button>
+</div>
+{% endif %}
 
-            <!-- Video 1 -->
-            <div class="accordion-item">
-                <button class="accordion-header" data-accordion="1">
-                    <span class="accordion-title">
-                        <i class="fas fa-video"></i> AI ilə hazırlığa necə başlamaq olar?
-                        {% if 1 in progress %}
-                            <span class="watched-badge">✅ Tamamlandı</span>
-                        {% endif %}
+<!-- Progress -->
+<div class="progress-section">
+    <div class="container">
+        <div class="progress-info">
+            <span>📚 Tamamlanma: <strong id="progressText">{{ progress|length }}/2</strong></span>
+            <div class="progress-bar-outer">
+                <div class="progress-bar-inner" style="width: {{ (progress|length / 2 * 100)|int }}%"></div>
+            </div>
+            {% if progress|length == 2 %}
+            <span style="color: var(--success); font-weight:700; white-space:nowrap;">🏆 Tamamlandı!</span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Video page header -->
+<div class="video-page-header">
+    <div class="container">
+        <h1 class="video-page-title">Video Dərslər</h1>
+        <p class="video-page-subtitle">AI ilə hazırlığa başlamaq üçün aşağıdakı dərsləri izlə</p>
+    </div>
+</div>
+
+<div class="video-container">
+    <div class="video-sections">
+
+        <!-- Video 1 -->
+        <div class="accordion-item">
+            <button class="accordion-header" data-accordion="1">
+                <span class="accordion-title">
+                    <i class="fas fa-play-circle"></i>
+                    <span>
+                        AI ilə hazırlığa necə başlamaq olar?
+                        {% if 1 in progress %}<span class="watched-badge">✅ Tamamlandı</span>{% endif %}
                     </span>
-                    <i class="fas fa-chevron-down accordion-icon"></i>
-                </button>
-                <div class="accordion-content" id="content-1">
+                </span>
+                <i class="fas fa-chevron-down accordion-icon"></i>
+            </button>
+            <div class="accordion-content" id="content-1">
+                <div class="accordion-inner">
                     <div class="video-card">
                         <div class="video-watermark" aria-hidden="true">
                             <span class="watermark-text">{{ email }}</span>
                             <span class="watermark-text watermark-text-2">{{ email }}</span>
                             <span class="watermark-text watermark-text-3">{{ email }}</span>
                         </div>
-                        <iframe
-                            loading="lazy"
-                            frameborder="0"
+                        <iframe loading="lazy" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
+                            allowfullscreen></iframe>
                     </div>
                     {% if 1 not in progress %}
                     <button class="mark-watched-btn" onclick="markWatched(1, this)">
@@ -87,31 +99,31 @@
                     {% endif %}
                 </div>
             </div>
+        </div>
 
-            <!-- Video 2 -->
-            <div class="accordion-item">
-                <button class="accordion-header" data-accordion="2">
-                    <span class="accordion-title">
-                        <i class="fas fa-lightbulb"></i> Real Praktiki Nümunə
-                        {% if 2 in progress %}
-                            <span class="watched-badge">✅ Tamamlandı</span>
-                        {% endif %}
+        <!-- Video 2 -->
+        <div class="accordion-item">
+            <button class="accordion-header" data-accordion="2">
+                <span class="accordion-title">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>
+                        Real Praktiki Nümunə
+                        {% if 2 in progress %}<span class="watched-badge">✅ Tamamlandı</span>{% endif %}
                     </span>
-                    <i class="fas fa-chevron-down accordion-icon"></i>
-                </button>
-                <div class="accordion-content" id="content-2">
+                </span>
+                <i class="fas fa-chevron-down accordion-icon"></i>
+            </button>
+            <div class="accordion-content" id="content-2">
+                <div class="accordion-inner">
                     <div class="video-card">
                         <div class="video-watermark" aria-hidden="true">
                             <span class="watermark-text">{{ email }}</span>
                             <span class="watermark-text watermark-text-2">{{ email }}</span>
                             <span class="watermark-text watermark-text-3">{{ email }}</span>
                         </div>
-                        <iframe
-                            loading="lazy"
-                            frameborder="0"
+                        <iframe loading="lazy" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
+                            allowfullscreen></iframe>
                     </div>
                     {% if 2 not in progress %}
                     <button class="mark-watched-btn" onclick="markWatched(2, this)">
@@ -122,80 +134,73 @@
                     {% endif %}
                 </div>
             </div>
-
         </div>
+
     </div>
+</div>
 
-    <footer>
-        <p>&copy; 2026 AbituriyentAI. All rights reserved.</p>
-    </footer>
+<footer>
+    <p>&copy; 2026 AbituriyentAI. Bütün hüquqlar qorunur.</p>
+</footer>
 
-    <script>
-        // Accordion data
-        const accordionData = {
-            1: { videoId: '85NVKp7YoJY' },
-            2: { videoId: 'QYeK25CvJNY' }
-        };
+<script>
+const accordionData = {
+    1: { videoId: '85NVKp7YoJY' },
+    2: { videoId: 'QYeK25CvJNY' }
+};
 
-        // Accordion toggle
-        document.querySelectorAll('.accordion-header').forEach(header => {
-            header.addEventListener('click', function () {
-                const accordionId = this.getAttribute('data-accordion');
-                const content = document.getElementById(`content-${accordionId}`);
-                const icon = this.querySelector('.accordion-icon');
-                const isOpen = content.classList.contains('active');
+document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', function () {
+        const id = this.getAttribute('data-accordion');
+        const content = document.getElementById(`content-${id}`);
+        const icon = this.querySelector('.accordion-icon');
+        const isOpen = content.classList.contains('active');
 
-                document.querySelectorAll('.accordion-content').forEach(item => item.classList.remove('active'));
-                document.querySelectorAll('.accordion-icon').forEach(i => i.classList.remove('rotated'));
+        document.querySelectorAll('.accordion-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.accordion-icon').forEach(el => el.classList.remove('rotated'));
 
-                if (!isOpen) {
-                    content.classList.add('active');
-                    icon.classList.add('rotated');
-                    const iframe = content.querySelector('iframe');
-                    if (!iframe.getAttribute('src')) {
-                        const videoId = accordionData[accordionId].videoId;
-                        iframe.setAttribute('src', `https://www.youtube.com/embed/${videoId}?modestbranding=1&rel=0&showinfo=0`);
-                    }
+        if (!isOpen) {
+            content.classList.add('active');
+            icon.classList.add('rotated');
+            const iframe = content.querySelector('iframe');
+            if (!iframe.getAttribute('src')) {
+                iframe.setAttribute('src', `https://www.youtube.com/embed/${accordionData[id].videoId}?modestbranding=1&rel=0&showinfo=0`);
+            }
+        }
+    });
+});
+
+function markWatched(videoId, btn) {
+    fetch(`/video/watched/${videoId}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                btn.outerHTML = '<p class="already-watched">✅ Bu videoya baxmışsınız</p>';
+                const title = document.querySelector(`[data-accordion="${videoId}"] .accordion-title span`);
+                if (title && !title.querySelector('.watched-badge')) {
+                    title.insertAdjacentHTML('beforeend', '<span class="watched-badge">✅ Tamamlandı</span>');
                 }
-            });
+                updateProgress();
+            }
         });
+}
 
-        // Mark video as watched
-        function markWatched(videoId, btn) {
-            fetch(`/video/watched/${videoId}`, { method: 'POST' })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        btn.outerHTML = '<p class="already-watched">✅ Bu videoya baxmışsınız</p>';
-                        // Update badge on header
-                        const header = document.querySelector(`[data-accordion="${videoId}"] .accordion-title`);
-                        if (!header.querySelector('.watched-badge')) {
-                            header.insertAdjacentHTML('beforeend', '<span class="watched-badge">✅ Tamamlandı</span>');
-                        }
-                        // Update progress bar
-                        updateProgress();
-                    }
-                });
-        }
+function updateProgress() {
+    const count = document.querySelectorAll('.watched-badge').length;
+    document.getElementById('progressText').textContent = `${count}/2`;
+    document.querySelector('.progress-bar-inner').style.width = `${count / 2 * 100}%`;
+}
 
-        // Update progress bar dynamically
-        function updateProgress() {
-            const badges = document.querySelectorAll('.watched-badge').length;
-            document.getElementById('progressText').textContent = `${badges}/2`;
-            document.querySelector('.progress-bar-inner').style.width = `${badges / 2 * 100}%`;
-        }
+function confirmLogout(e) {
+    e.preventDefault();
+    document.getElementById('logoutModal').style.display = 'flex';
+    document.getElementById('logoutBackdrop').style.display = 'block';
+}
 
-        // Logout confirmation
-        function confirmLogout(e) {
-            e.preventDefault();
-            document.getElementById('logoutModal').style.display = 'flex';
-            document.getElementById('logoutBackdrop').style.display = 'block';
-        }
-
-        function closeLogout() {
-            document.getElementById('logoutModal').style.display = 'none';
-            document.getElementById('logoutBackdrop').style.display = 'none';
-        }
-    </script>
+function closeLogout() {
+    document.getElementById('logoutModal').style.display = 'none';
+    document.getElementById('logoutBackdrop').style.display = 'none';
+}
+</script>
 </body>
 </html>

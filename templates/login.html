@@ -1,96 +1,95 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="az">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Online Course</title>
+    <title>Daxil ol - AbituriyentAI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <!-- Consent Modal -->
-    <div id="consentOverlay" class="consent-overlay">
-        <div class="consent-modal">
-            <div class="consent-modal-content">
-                <div class="consent-modal-header">
-                    <h2>İstifadə Şərtləri</h2>
-                </div>
-                <div class="consent-modal-body">
-                    <p>Bu platforma üzərində yerləşən video məzmun yalnız qeydiyyatdan keçmiş və təsdiq olunmuş istifadəçilər tərəfindən şəxsi təhsil məqsədləri üçün istifadə olunmaq üçün nəzərdə tutulmuşdur. Video kontentin hər hansı formada (keçid, paylaşma, yükləmə, yazıya almaq və ya digər üçüncü tərəflərə göndərmə) paylaşılması, yayılması və ya istifadə edilməsi qat-i olaraq yasağdır.</p>
-                    <p>Bu şərtlərin pozulması halində istifadəçi hesabının ani olaraq bloklana biləcəyini, habelə yaşadığı zərərlərə görə hüquqi məsuliyyət daşıya biləcəyini qəbul edirəm. Məzmunun qeyri-icazəli surətdə paylaşılması nəticəsində yaranacaq bütün zərərlərə görə məsuliyyət tamamilə istifadəçiyə aiddir.</p>
-                    <p>Bu şərtləri qəbul etməklə, siz yuxarıda göstərilən bütün qaydaları başa düşdüyünüzü və onlara riayət edəcəyinizi təsdiq edirsiniz. Hər hansı bir pozuntu halında platform idarəçiliyi qanunvericiliyin rəhbərliyində tədbirlərin alınması hüququna malikdir.</p>
-                </div>
-                <div class="consent-checkbox-wrapper">
-                    <input type="checkbox" id="consentCheckbox">
-                    <label for="consentCheckbox">Şərtləri oxudum və qəbul edirəm</label>
-                </div>
-                <div class="consent-button-group">
-                    <button id="consentConfirmBtn" class="consent-btn-confirm" disabled>Təsdiq et</button>
-                </div>
+
+<!-- Consent Modal -->
+<div id="consentOverlay" class="consent-overlay">
+    <div class="consent-modal">
+        <div class="consent-modal-content">
+            <div class="consent-modal-header"><h2>İstifadə Şərtləri</h2></div>
+            <div class="consent-modal-body">
+                <p>Bu platforma üzərində yerləşən video məzmun yalnız qeydiyyatdan keçmiş və təsdiq olunmuş istifadəçilər tərəfindən şəxsi təhsil məqsədləri üçün nəzərdə tutulmuşdur. Video kontentin hər hansı formada paylaşılması qəti olaraq yasağdır.</p>
+                <p>Bu şərtlərin pozulması halında istifadəçi hesabının ani olaraq bloklana biləcəyini, habelə hüquqi məsuliyyət daşıya biləcəyini qəbul edirəm.</p>
+                <p>Bu şərtləri qəbul etməklə, siz bütün qaydaları başa düşdüyünüzü və onlara riayət edəcəyinizi təsdiq edirsiniz.</p>
+            </div>
+            <div class="consent-checkbox-wrapper">
+                <input type="checkbox" id="consentCheckbox">
+                <label for="consentCheckbox">Şərtləri oxudum və qəbul edirəm</label>
+            </div>
+            <div class="consent-button-group">
+                <button id="consentConfirmBtn" class="consent-btn-confirm" disabled>Təsdiq et</button>
             </div>
         </div>
     </div>
+</div>
 
-    <nav class="navbar">
-        <div class="container">
-            <h1 class="logo">AbituriyentAI</h1>
-            <div class="nav-links">
-                <a href="/">Home</a>
-            </div>
+<div class="auth-page">
+    <!-- Left panel -->
+    <div class="auth-left">
+        <div class="auth-left-content">
+            <a href="/" class="auth-logo">AbituriyentAI</a>
+            <h2>Xoş gəldin,<br>abituriyent! 👋</h2>
+            <p>AI ilə hazırlıq platformuna daxil ol və imtahanlara daha ağıllı hazırlaşmağa başla.</p>
         </div>
-    </nav>
+        <div class="auth-left-footer">
+            &copy; 2026 AbituriyentAI
+        </div>
+    </div>
 
-    <div class="login-container">
-        <div class="login-box">
-            <h2>Login to Your Account</h2>
-            
+    <!-- Right panel -->
+    <div class="auth-right">
+        <div class="auth-box">
+            <h2>Daxil ol</h2>
+            <p class="auth-subtitle">Hesabına giriş et və dərslərinə davam et</p>
+
             {% if success %}
-                <div class="success-message">
-                    ✅ {{ success }}
-                </div>
+            <div class="success-message">✅ {{ success }}</div>
             {% endif %}
-            
+
             {% if error %}
-                <div class="error-message">
-                    ❌ {{ error }}
-                </div>
+            <div class="error-message">❌ {{ error }}</div>
             {% endif %}
 
             <form method="POST" class="login-form">
                 <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input 
-                        type="email" 
-                        id="email" 
-                        name="email" 
-                        required 
-                        placeholder="Enter your email"
-                    >
+                    <label for="email">Email ünvanı</label>
+                    <input type="email" id="email" name="email" required placeholder="example@gmail.com">
                 </div>
-
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        required 
-                        placeholder="Enter your password"
-                    >
+                    <label for="password">Şifrə</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" required placeholder="Şifrəni daxil et">
+                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)">👁</button>
+                    </div>
                 </div>
-
-                <button type="submit" class="btn-primary btn-login-submit">Login</button>
+                <button type="submit" class="btn-primary btn-login-submit">Daxil ol</button>
             </form>
 
             <p class="login-footer">
-                Don't have an account? <a href="/signup">Sign up</a>
+                Hesabın yoxdur? <a href="/signup">Qeydiyyatdan keç</a>
             </p>
         </div>
     </div>
+</div>
 
-    <footer>
-        <p>&copy; 2026 AbituriyentAI. All rights reserved.</p>
-    </footer>
-
-    <script src="{{ url_for('static', filename='consent-modal.js') }}"></script>
+<script src="{{ url_for('static', filename='consent-modal.js') }}"></script>
+<script>
+function togglePassword(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+    } else {
+        input.type = 'password';
+        btn.textContent = '👁';
+    }
+}
+</script>
 </body>
 </html>
