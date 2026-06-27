@@ -1106,3 +1106,70 @@ footer p {
         font-size: 14px;
     }
 }
+
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 45px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0;
+}
+
+.password-hint {
+    display: block;
+    margin-top: 5px;
+    font-size: 13px;
+    color: #888;
+}
+
+/* Welcome banner */
+.welcome-banner {
+    background: linear-gradient(135deg, #6c63ff, #4facfe);
+    color: white;
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.welcome-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+/* Progress bar */
+.progress-section { padding: 16px 0; background: #f8f9fa; }
+.progress-info { display: flex; align-items: center; gap: 16px; }
+.progress-bar-outer { flex: 1; background: #e0e0e0; border-radius: 10px; height: 10px; }
+.progress-bar-inner { background: #6c63ff; height: 10px; border-radius: 10px; transition: width 0.4s ease; }
+
+/* Watched badge */
+.watched-badge { background: #e8f5e9; color: #2e7d32; font-size: 13px; padding: 2px 8px; border-radius: 20px; margin-left: 10px; }
+.mark-watched-btn { margin: 12px 0; padding: 8px 20px; background: #6c63ff; color: white; border: none; border-radius: 8px; cursor: pointer; }
+.mark-watched-btn:hover { background: #574fd6; }
+.already-watched { color: #2e7d32; margin: 12px 0; font-weight: 500; }
+
+/* Logout modal */
+.logout-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+.logout-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 32px; border-radius: 16px; z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.2); }
+.logout-modal-box { text-align: center; }
+.logout-modal-box p { font-size: 18px; margin-bottom: 20px; }
+.logout-modal-buttons { display: flex; gap: 12px; justify-content: center; }
+.btn-cancel { padding: 10px 24px; border: 2px solid #ccc; background: white; border-radius: 8px; cursor: pointer; font-size: 15px; }
+.btn-cancel:hover { background: #f0f0f0; }

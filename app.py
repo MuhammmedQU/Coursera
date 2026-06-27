@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session, url_for, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 import os
@@ -16,19 +16,16 @@ ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
 
 # ===== DATABASE FUNCTIONS =====
 def get_db():
-    """Get database connection"""
     conn = sqlite3.connect(DATABASE)
     conn.row_factory = sqlite3.Row
     return conn
 
 
 def init_db():
-    """Initialize database and create tables if they don't exist"""
     try:
         conn = get_db()
         cursor = conn.cursor()
-        
-        # Create users table
+
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,8 +36,7 @@ def init_db():
                 approved_at TIMESTAMP
             )
         ''')
-        
-        # Create admin table for admin credentials
+
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS admin_users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,7 +45,19 @@ def init_db():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
-        
+
+        # Progress table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS video_progress (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT NOT NULL,
+                video_id INTEGER NOT NULL,
+                watched INTEGER DEFAULT 0,
+                watched_at TIMESTAMP,
+                UNIQUE(email, video_id)
+            )
+        ''')
+
         conn.commit()
         conn.close()
         print("[DB] Database tables initialized successfully")
@@ -58,18 +66,17 @@ def init_db():
 
 
 def migrate_from_json():
-    """Migrate existing users from users.json to database (run only once)"""
     if not os.path.exists('users.json'):
         print("[DB] No users.json file found, skipping migration")
         return
-    
+
     try:
         conn = get_db()
         cursor = conn.cursor()
-        
+
         with open('users.json', 'r') as f:
             users = json.load(f)
-        
+
         migrated_count = 0
         for user in users:
             try:
@@ -79,9 +86,8 @@ def migrate_from_json():
                 ''', (user['email'], user['password'], user.get('status', 'pending')))
                 migrated_count += 1
             except sqlite3.IntegrityError:
-                # User already exists, skip
                 pass
-        
+
         conn.commit()
         conn.close()
         print(f"[DB] Successfully migrated {migrated_count} users from users.json")
@@ -90,11 +96,10 @@ def migrate_from_json():
 
 
 def create_admin_user():
-    """Create default admin user if it doesn't exist"""
     try:
         conn = get_db()
         cursor = conn.cursor()
-        
+
         hashed_password = generate_password_hash(ADMIN_PASSWORD)
         cursor.execute('''
             INSERT INTO admin_users (email, password)
@@ -104,7 +109,6 @@ def create_admin_user():
         conn.close()
         print(f"[DB] Admin user created: {ADMIN_EMAIL}")
     except sqlite3.IntegrityError:
-        # Admin already exists
         print(f"[DB] Admin user already exists: {ADMIN_EMAIL}")
         conn.close()
     except Exception as e:
@@ -116,7 +120,6 @@ def create_admin_user():
 
 
 def get_user_by_email(email):
-    """Get user from database by email"""
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
@@ -126,10 +129,8 @@ def get_user_by_email(email):
 
 
 def add_user(email, password, status='pending'):
-    """Add new user to database"""
     conn = get_db()
     cursor = conn.cursor()
-    
     try:
         hashed_password = generate_password_hash(password)
         cursor.execute('''
@@ -142,12 +143,10 @@ def add_user(email, password, status='pending'):
         result = False
     finally:
         conn.close()
-    
     return result
 
 
 def get_all_users():
-    """Get all users from database"""
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT id, email, status, created_at, approved_at FROM users ORDER BY created_at DESC')
@@ -157,27 +156,20 @@ def get_all_users():
 
 
 def update_user_status(user_id, status):
-    """Update user status (approved/pending/rejected)"""
     conn = get_db()
     cursor = conn.cursor()
-    
     if status == 'approved':
         cursor.execute('''
             UPDATE users SET status = ?, approved_at = CURRENT_TIMESTAMP
             WHERE id = ?
         ''', (status, user_id))
     else:
-        cursor.execute('''
-            UPDATE users SET status = ?
-            WHERE id = ?
-        ''', (status, user_id))
-    
+        cursor.execute('UPDATE users SET status = ? WHERE id = ?', (status, user_id))
     conn.commit()
     conn.close()
 
 
 def delete_user(user_id):
-    """Delete user from database"""
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
@@ -186,91 +178,117 @@ def delete_user(user_id):
 
 
 def verify_admin(email, password):
-    """Verify admin credentials"""
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM admin_users WHERE email = ?', (email,))
     admin = cursor.fetchone()
     conn.close()
-    
     if admin and check_password_hash(admin['password'], password):
         return True
     return False
 
 
+def get_user_progress(email):
+    """Get watched video IDs for a user"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT video_id FROM video_progress WHERE email = ? AND watched = 1', (email,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [row['video_id'] for row in rows]
+
+
+def mark_video_watched(email, video_id):
+    """Mark a video as watched for a user"""
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO video_progress (email, video_id, watched, watched_at)
+        VALUES (?, ?, 1, CURRENT_TIMESTAMP)
+        ON CONFLICT(email, video_id) DO UPDATE SET watched = 1, watched_at = CURRENT_TIMESTAMP
+    ''', (email, video_id))
+    conn.commit()
+    conn.close()
+
+
 # ===== ROUTES =====
 @app.route('/')
 def index():
-    """Public landing page"""
     return render_template('index.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    """Login page"""
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        
+
         user = get_user_by_email(email)
-        
-        # Check if user exists and password matches
+
         if user and check_password_hash(user['password'], password):
-            # Check if user status is approved
             if user['status'] == 'pending':
-                return render_template('login.html', error="Your account is pending approval. Please wait for the admin to grant you access. Contact the admin with your email to request access.")
+                return render_template('login.html', error="Hesabınız hələ təsdiqlənməyib. Admin təsdiqini gözləyin.")
             elif user['status'] == 'rejected':
-                return render_template('login.html', error="Your account has been rejected. Please contact the admin.")
-            
-            # User is approved, proceed with login
+                return render_template('login.html', error="Hesabınız rədd edilib. Adminlə əlaqə saxlayın.")
+
             session['email'] = email
+            session['is_new_login'] = True  # Flag for welcome message
             return redirect(url_for('video'))
         else:
-            return render_template('login.html', error="Invalid email or password - access denied")
-    
+            return render_template('login.html', error="Yanlış email və ya şifrə - giriş rədd edildi")
+
     success = request.args.get('success')
     return render_template('login.html', success=success)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    """Signup/Registration page"""
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        
-        # Check if email already exists
+
         if get_user_by_email(email):
-            return render_template('signup.html', error="Email already registered")
-        
-        # Add new user with pending status
+            return render_template('signup.html', error="Bu email artıq qeydiyyatdan keçib")
+
         if add_user(email, password, 'pending'):
-            # Redirect to login with success message
-            return redirect(url_for('login', success="Registration successful! Your account is pending admin approval. Please wait until you're granted access."))
+            return redirect(url_for('login', success="Qeydiyyat uğurlu oldu! Admin təsdiqini gözləyin."))
         else:
-            return render_template('signup.html', error="Error during registration. Please try again.")
-    
+            return render_template('signup.html', error="Qeydiyyat zamanı xəta baş verdi. Yenidən cəhd edin.")
+
     return render_template('signup.html')
 
 
 @app.route('/video')
 def video():
-    """Protected video page"""
     if 'email' not in session:
         return redirect(url_for('login'))
-    
-    # Verify user is still approved
+
     user = get_user_by_email(session['email'])
     if not user or user['status'] != 'approved':
         session.clear()
         return redirect(url_for('login'))
-    
-    return render_template('video.html', email=session['email'])
+
+    # Get progress and welcome flag
+    progress = get_user_progress(session['email'])
+    is_new_login = session.pop('is_new_login', False)
+
+    return render_template('video.html',
+                           email=session['email'],
+                           progress=progress,
+                           is_new_login=is_new_login)
+
+
+@app.route('/video/watched/<int:video_id>', methods=['POST'])
+def mark_watched(video_id):
+    """Mark a video as watched - called via JS"""
+    if 'email' not in session:
+        return jsonify({'error': 'unauthorized'}), 401
+    mark_video_watched(session['email'], video_id)
+    return jsonify({'success': True})
 
 
 @app.route('/logout')
 def logout():
-    """Logout user"""
     session.clear()
     return redirect(url_for('index'))
 
@@ -278,69 +296,59 @@ def logout():
 # ===== ADMIN ROUTES =====
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_login():
-    """Admin login page"""
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        
+
         if verify_admin(email, password):
             session['admin_email'] = email
             return redirect(url_for('admin_panel'))
         else:
-            return render_template('admin_login.html', error="Invalid email or password")
-    
+            return render_template('admin_login.html', error="Yanlış email və ya şifrə")
+
     return render_template('admin_login.html')
 
 
 @app.route('/admin/panel')
 def admin_panel():
-    """Admin panel - manage users"""
     if 'admin_email' not in session:
         return redirect(url_for('admin_login'))
-    
+
     users = get_all_users()
     return render_template('admin_panel.html', users=users, admin_email=session['admin_email'])
 
 
 @app.route('/admin/approve/<int:user_id>', methods=['POST'])
 def approve_user(user_id):
-    """Approve a user"""
     if 'admin_email' not in session:
         return redirect(url_for('admin_login'))
-    
     update_user_status(user_id, 'approved')
     return redirect(url_for('admin_panel'))
 
 
 @app.route('/admin/reject/<int:user_id>', methods=['POST'])
 def reject_user(user_id):
-    """Reject a user"""
     if 'admin_email' not in session:
         return redirect(url_for('admin_login'))
-    
     update_user_status(user_id, 'rejected')
     return redirect(url_for('admin_panel'))
 
 
 @app.route('/admin/delete/<int:user_id>', methods=['POST'])
 def delete_user_route(user_id):
-    """Delete a user"""
     if 'admin_email' not in session:
         return redirect(url_for('admin_login'))
-    
     delete_user(user_id)
     return redirect(url_for('admin_panel'))
 
 
 @app.route('/admin/logout')
 def admin_logout():
-    """Admin logout"""
     session.clear()
     return redirect(url_for('admin_login'))
 
 
 # ===== APPLICATION INITIALIZATION =====
-# Initialize database (runs on app startup - works with both Flask dev server and Gunicorn)
 print("[STARTUP] Initializing database...")
 init_db()
 print("[STARTUP] Creating admin user...")
@@ -350,10 +358,8 @@ migrate_from_json()
 print("[STARTUP] Application initialized successfully!\n")
 
 
-# Backup initialization handler (in case module-level initialization doesn't run)
 @app.before_request
 def ensure_db_initialized():
-    """Ensure database is initialized before handling any request"""
     if not os.path.exists(DATABASE):
         print("[STARTUP] Database not found, running initialization...")
         init_db()
@@ -362,5 +368,4 @@ def ensure_db_initialized():
 
 
 if __name__ == '__main__':
-    # Local development only
     app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
