@@ -49,7 +49,7 @@
                 </div>
             {% endif %}
 
-            <form method="POST" class="login-form">
+            <form method="POST" class="login-form" onsubmit="return validateForm()">
                 <div class="form-group">
                     <label for="email">Email Address</label>
                     <input 
@@ -63,13 +63,18 @@
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input 
-                        type="password" 
-                        id="password" 
-                        name="password" 
-                        required 
-                        placeholder="Enter your password"
-                    >
+                    <div class="password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            minlength="8"
+                            placeholder="Enter your password (min. 8 characters)"
+                        >
+                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)">👁</button>
+                    </div>
+                    <small id="password-hint" class="password-hint">Şifrə ən azı 8 hərf olmalıdır</small>
                 </div>
 
                 <button type="submit" class="btn-primary btn-login-submit">Sign Up</button>
@@ -86,5 +91,40 @@
     </footer>
 
     <script src="{{ url_for('static', filename='consent-modal.js') }}"></script>
+    <script>
+        function togglePassword(fieldId, btn) {
+            const input = document.getElementById(fieldId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁';
+            }
+        }
+
+        function validateForm() {
+            const password = document.getElementById('password').value;
+            const hint = document.getElementById('password-hint');
+            if (password.length < 8) {
+                hint.style.color = 'red';
+                hint.textContent = '❌ Şifrə ən azı 8 hərf olmalıdır!';
+                return false;
+            }
+            return true;
+        }
+
+        // Real-time password check
+        document.getElementById('password').addEventListener('input', function() {
+            const hint = document.getElementById('password-hint');
+            if (this.value.length < 8) {
+                hint.style.color = 'red';
+                hint.textContent = '❌ Şifrə ən azı 8 hərf olmalıdır!';
+            } else {
+                hint.style.color = 'green';
+                hint.textContent = '✅ Şifrə uyğundur';
+            }
+        });
+    </script>
 </body>
 </html>
